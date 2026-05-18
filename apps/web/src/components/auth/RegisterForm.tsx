@@ -47,7 +47,8 @@ export function RegisterForm({ site }: RegisterFormProps) {
         setError('Dados inválidos')
       }
     } else {
-      setError('Erro ao criar conta. Tente novamente.')
+      const data = await res.json().catch(() => null) as { error?: string } | null
+      setError(data?.error ?? 'Erro ao criar conta. Tente novamente.')
     }
 
     setLoading(false)
