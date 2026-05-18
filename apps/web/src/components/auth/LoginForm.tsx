@@ -30,8 +30,8 @@ export function LoginForm({ site }: LoginFormProps) {
     })
 
     if (res.ok) {
-      // Platform vai para dashboard, outros sites para a home do site
-      const redirectTo = site.id === 'platform' ? '/dashboard' : `/${site.slug}`
+      // Platform vai para dashboard admin, outros sites para área do cliente
+      const redirectTo = site.id === 'platform' ? '/dashboard' : `/${site.slug}/minha-conta`
       router.push(redirectTo)
       router.refresh()
     } else {

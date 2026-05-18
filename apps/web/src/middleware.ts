@@ -23,6 +23,9 @@ import { SITES, VALID_SITE_IDS } from '@/lib/sites'
 
 const PROTECTED_PATHS = ['/dashboard']
 
+// Rotas protegidas por tenant — /{siteSlug}/minha-conta
+const PROTECTED_TENANT_PATHS = ['/minha-conta']
+
 const PROTECTED_API_PATHS = [
   '/api/dashboard',
   '/api/upload',
@@ -81,6 +84,19 @@ export function middleware(req: NextRequest) {
   const isProtected = PROTECTED_PATHS.some(p => pathname.startsWith(p))
 
   if (isProtected && !hasValidRefreshCookie(req, siteId)) {
+    const loginPath = `/${siteId}/login`
+    const loginUrl = new URL(loginPath, req.url)
+    loginUrl.searchParams.set('redirect', pathname)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // ── Protected tenant pages (/{siteSlug}/minha-conta) ───────────────────
+  const isTenantProtected = PROTECTED_TENANT_PATHS.some(p => {
+    const segments = pathname.split('/').filter(Boolean)
+    return segments.length >= 2 && VALID_SITE_IDS.includes(segments[0] ?? '') && `/${segments[1]}` === p
+  })
+
+  if (isTenantProtected && !hasValidRefreshCookie(req, siteId)) {
     const loginPath = `/${siteId}/login`
     const loginUrl = new URL(loginPath, req.url)
     loginUrl.searchParams.set('redirect', pathname)
