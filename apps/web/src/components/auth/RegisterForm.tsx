@@ -31,8 +31,8 @@ export function RegisterForm({ site }: RegisterFormProps) {
     })
 
     if (res.status === 201) {
-      // Platform vai para dashboard admin, outros sites para área do cliente
-      const redirectTo = site.id === 'platform' ? '/dashboard' : `/${site.slug}/minha-conta`
+      // Todos os tenants vão para área do cliente
+      const redirectTo = `/${site.slug}/minha-conta`
       router.push(redirectTo)
       router.refresh()
     } else if (res.status === 409) {
